@@ -177,9 +177,9 @@ function Gameplay()
 function ScoreBoard(life=0, score=0) {
     ctx.beginPath();
     ctx.fillStyle = 'white';
-    ctx.font = "bold 2rem cursive"
+    ctx.font = "40px cursive";
     ctx.fillText('Life : ' + life, ctx.canvas.width * 0.05, 100);
-    ctx.fillText('Score : ' + score, ctx.canvas.width * 0.05, 150);
+    ctx.fillText('Score : ' + score, ctx.canvas.width * 0.05, 160);
     ctx.closePath();
 }
 
@@ -187,17 +187,18 @@ function GameOver() {
     ctx.beginPath();
     ctx.fillStyle = 'red';
     ctx.textAlign = 'center';
-    ctx.font = 'bold 5rem cursive';
+    ctx.font = 'bold 150px cursive';
     ctx.fillText('Game Over', ctx.canvas.width/2, ctx.canvas.height * 0.4);
     ctx.closePath();
     ctx.beginPath();
     ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
-    ctx.font = 'bold 2.5rem cursive';
+    ctx.font = '40px cursive';
     ctx.fillText('Press Play to Restart Game', ctx.canvas.width/2, ctx.canvas.height * 0.7);
     ctx.closePath();
 }
 
+// Handle keyboard inputs
 window.addEventListener('keydown', function(event)
 {
     if(event.key === 'ArrowLeft' && Input.Horizontal == 0) {
@@ -218,27 +219,30 @@ window.addEventListener('keydown', function(event)
     }
 });
 
-{
+{   // Handle touch input, for touches devices like mobile phones.
     const touch = {
         'start': {},
-        'delta': {}
+        'delta': {},
+        'hasTouch': false
     };
 
     window.addEventListener('touchstart', function(event)
     {
         touch.start = {
-            'x': event.touches[0].screenX,
-            'y': event.touches[0].screenY
+            'x': event.touches[0].clientX,
+            'y': event.touches[0].clientY
         };
+
+        touch.hasTouch = true;
     });
     window.addEventListener('touchmove', function(event)
     {
         touch.delta = {
-            'x': event.touches[0].screenX - touch.start.x,
-            'y': event.touches[0].screenY - touch.start.y
+            'x': event.touches[0].clientX - touch.start.x,
+            'y': event.touches[0].clientY - touch.start.y
         };
         
-        if(Math.abs(touch.start.x) > Math.abs(touch.delta.y) && Input.Horizontal == 0)
+        if(Math.abs(touch.start.x) > Math.abs(touch.delta.y) && touch.hasTouch && Input.Horizontal == 0)
         {
             if(touch.delta.x < 0) {
                 Input.Horizontal = -1;
@@ -249,7 +253,7 @@ window.addEventListener('keydown', function(event)
 
             Input.Vertical = 0;
         }
-        else if(Input.Vertical == 0)
+        else if(Input.Vertical == 0 && touch.hasTouch)
         {
             if(touch.delta.y < 0) {
                 Input.Vertical = -1;
@@ -260,5 +264,7 @@ window.addEventListener('keydown', function(event)
 
             Input.Horizontal = 0;
         }
+
+        touch.hasTouch = false;
     });
 }

@@ -1,0 +1,41 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+section {
+    margin: 5%;
+}
+.title {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+.game-collection {
+    display: grid;
+    row-gap: 30px;
+    column-gap: 2%;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.game {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+.game-link {
+    color: black;
+    text-decoration: none;
+}
+.game-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+@media only screen and (max-width: 360px)
+{
+    .game-collection {
+        grid-template-columns: auto;
+    }
+}

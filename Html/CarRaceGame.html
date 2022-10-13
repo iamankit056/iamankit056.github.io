@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Game Title -->
+    <title>Car Race | Ankit's Project</title>
+
+    <!-- Link of all scripts and stylesheet -->
+    <link rel="stylesheet" href="../Css/style.css">
+    <script defer src="../Scripts/CarRaceGame.js"></script> 
+    
+    <!-- Internal styling -->
+    <style>
+        canvas {
+            background-color: rgb(0, 255, 0);
+        }
+        #game-assets {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas>This Game does not support your browser.</canvas>
+    <button onclick="Gameplay()">Play</button>
+
+    <!-- Import all images and sound effect file -->
+    <div id="game-assets">
+        <!-- Images -->
+        <img src="../Images/Cars.png" alt="Cars Image" id="cars">
+        <img src="../Images/Road.png" alt="" id="road">
+        <!-- Sound Effects -->
+        <audio controls src="../Sound_Effects/Crash.mp3" id="crashSoundEffect"></audio>
+        <audio controls src="../Sound_Effects/Start.mp3" id="startSoundEffect"></audio>
+        <audio controls src="../Sound_Effects/Driving.mp3" id="drivingSoundEffect"></audio>
+        <audio controls src="../Sound_Effects/CountDown.mp3" id="countDownSoundEffect"></audio>
+    </div>
+</body>
+</html>
