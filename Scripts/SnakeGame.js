@@ -32,7 +32,7 @@ class Snake
         for(let i=1; i < this.Body.length; i++) 
         {
             ctx.beginPath();
-            ctx.fillStyle = 'rgb(0, 255, 0)';
+            ctx.fillStyle = 'white';
             ctx.fillRect(this.Body[i].x, this.Body[i].y, this.size, this.size);
             ctx.closePath();
         }
@@ -153,13 +153,24 @@ function Gameplay()
             food.GenerateRandomPosition(tiles);
         }
 
-        if(snake.Body[0].x < 0  || snake.Body[0].x > SCR_WIDTH || 
-            snake.Body[0].y < 0 || snake.Body[0].y > SCR_HEIGHT) 
+        for(let i=1; i < snake.Body.length; i++)
         {
-            Input.Reset();
-            snake.life -= 1;
-            snake.ResetBody(tiles);
-            food.GenerateRandomPosition(tiles);
+            if(snake.Body[0].x < snake.Body[i].x + snake.size && snake.Body[0].x + snake.size > snake.Body[i].x && 
+                snake.Body[0].y < snake.Body[i].y + snake.size && snake.Body[0].y + snake.size > snake.Body[i].y) {
+                    Input.Reset();
+                    snake.life -= 1;
+                    snake.ResetBody(tiles);
+                    food.GenerateRandomPosition(tiles);
+                    console.log('snake bite it self.');
+            }
+        }
+
+        if(snake.Body[0].x < 0  || snake.Body[0].x > SCR_WIDTH || 
+            snake.Body[0].y < 0 || snake.Body[0].y > SCR_HEIGHT) {
+                Input.Reset();
+                snake.life -= 1;
+                snake.ResetBody(tiles);
+                food.GenerateRandomPosition(tiles);
         }
 
         if(snake.life < 1) 
