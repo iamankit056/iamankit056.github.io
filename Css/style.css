@@ -24,10 +24,18 @@ button {
     border-radius: 10px;
     background-color: blue;
 }
+.home-icon {
+    position: absolute;
+    top: 10%;
+    right: 5%;
+}
 @media only screen and (max-width: 360px)
 {
     button {
         left: 120px;
         min-width: 120px;
+    }
+    .home-icon {
+        top: 6%;
     }
 }

@@ -151,6 +151,7 @@ function Gameplay()
             score += 5;
             snake.hasFoodEat = true;
             food.GenerateRandomPosition(tiles);
+            // console.log('snake eat food.');
         }
 
         for(let i=1; i < snake.Body.length; i++)
@@ -161,7 +162,7 @@ function Gameplay()
                     snake.life -= 1;
                     snake.ResetBody(tiles);
                     food.GenerateRandomPosition(tiles);
-                    console.log('snake bite it self.');
+                    // console.log('snake bite it self.');
             }
         }
 
@@ -171,6 +172,7 @@ function Gameplay()
                 snake.life -= 1;
                 snake.ResetBody(tiles);
                 food.GenerateRandomPosition(tiles);
+                // console.log('snake collide with wall.')
         }
 
         if(snake.life < 1) 

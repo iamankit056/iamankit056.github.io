@@ -6,8 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Ankit's Projects</title>
     <link rel="stylesheet" href="Css/index.css">
+    <!-- Fontawesome link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
 <body>
+    <header>
+        <h1>Ankit</h1>
+        <nav>
+            <ul>
+                <li><a href="#">
+                    <i>Github</i>
+                </a></li>
+                <li><a href="#">
+                    <i>Unity</i>
+                </a></li>
+                <li><a href="#">
+                    <i>Linked in</i>
+                </a></li>
+            </ul>
+            <div class="icons" onclick="NavigationWindow()">
+                <i class="fa-solid fa-ellipsis-vertical fa-xl"></i>          
+            </div>
+        </nav>
+    </header>
     <section>
         <h1 class="title">All Games</h1>
 
@@ -20,5 +41,15 @@
             </div>
         </div>
     </section>
+
+    <!-- Internal Script -->
+    <script src="">
+        let hasNavigationWindowActive = false;
+
+        function NavigationWindow()
+        {
+            
+        }
+    </script>
 </body>
 </html>
