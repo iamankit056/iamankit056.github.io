@@ -8,29 +8,53 @@ const startSoundEffect = document.querySelector('#startSoundEffect');
 const drivingSoundEffect = document.querySelector('#drivingSoundEffect');
 const countDownSoundEffect = document.querySelector('#countDownSoundEffect');
 
+let horizontalInput = 0;
+
 class Car
 {
-    constructor(SCR_WIDTH=0, SCR_HEIGHT=0, sx=0, sy=0, swidth=0, sheight=0)
+    constructor(x=0, y=0, SCR_WIDTH=0, SCR_HEIGHT=0, carModelIndex=0, angleInDegree=0)
     {
-        this.sx = sx;
-        this.sy = sy;
-        this.swidth = swidth;
-        this.sheight = sheight;
+        this.x = x; 
+        this.y = y;
         this.width = SCR_WIDTH * 0.1;
+        this.modelIndex = carModelIndex;
+        this.angle = angleInDegree * Math.PI / 180;
         this.height = SCR_HEIGHT * ((SCR_HEIGHT < SCR_WIDTH) ? 0.3 : 0.15);
-        this.x = SCR_WIDTH / 2; 
-        this.y = SCR_HEIGHT * 0.6;
+
+        this.models = [
+            { 'sx': 77,  'sy': 56,  'swidth': 91, 'sheight': 181 }, // car 1
+            { 'sx': 203, 'sy': 56,  'swidth': 91, 'sheight': 181 }, // car 2
+            { 'sx': 331, 'sy': 270, 'swidth': 91, 'sheight': 181 }, // car 3
+            { 'sx': 76,  'sy': 266, 'swidth': 91, 'sheight': 181 }, // car 4
+            { 'sx': 204, 'sy': 259, 'swidth': 91, 'sheight': 192 }, // car 5
+            { 'sx': 337, 'sy': 49 , 'swidth': 81, 'sheight': 183 }  // car 6
+        ];
     }
 
-    Draw(ctx, carsImage, angleInDegree=0)
+    Draw(ctx, carsImage)
     {
         ctx.beginPath();
         ctx.save();
         ctx.translate(this.x, this.y);
-        ctx.rotate(angleInDegree * Math.PI / 180);
-        ctx.drawImage(carsImage, this.sx, this.sy, this.swidth, this.sheight, -this.width/2, -this.height/2, this.width, this.height);
+        ctx.rotate(this.angle);
+        ctx.drawImage(carsImage, 
+            this.models[this.modelIndex].sx, this.models[this.modelIndex].sy, 
+            this.models[this.modelIndex].swidth, this.models[this.modelIndex].sheight, 
+            -this.width/2, -this.height/2, 
+            this.width, this.height
+        );
         ctx.restore();
         ctx.closePath();
+    }
+
+    Collision(car)
+    {
+        if(this.x < car.x + car.width && this.x + this.width > car.x && 
+            this.y < car.y + car.height && this.y + this.height > car.height) {
+                return true;
+        }
+
+        return false;
     }
 }
 
@@ -84,16 +108,10 @@ function Gameplay()
     const SCR_HEIGHT = ctx.canvas.height;
 
     const road = new Road(roadImage, SCR_WIDTH, SCR_HEIGHT);
-    const cars = [
-        new Car(SCR_WIDTH, SCR_HEIGHT, 77, 56, 91, 181),
-        new Car(SCR_WIDTH, SCR_HEIGHT, 203, 56, 91, 181),
-        new Car(SCR_WIDTH, SCR_HEIGHT, 331, 270, 91, 181),
-        new Car(SCR_WIDTH, SCR_HEIGHT, 76, 266, 91, 181),
-        new Car(SCR_WIDTH, SCR_HEIGHT, 204, 259, 91, 192),
-        new Car(SCR_WIDTH, SCR_HEIGHT, 337, 49, 81, 183)
-    ];
-    
-    const player = cars[0];
+    const player = new Car(SCR_WIDTH / 2, SCR_HEIGHT * 0.8, SCR_WIDTH, SCR_HEIGHT, 0, 180);
+    const cars = [];
+
+    let hasGameStart = false;
 
     const gameInterval = setInterval(function()
     {
@@ -102,9 +120,91 @@ function Gameplay()
 
         // Render objects.
         road.Draw(ctx);
+        ScoreBoard()
+        for(let i=0; i < cars.length; i++) {
+            cars[i].Draw(ctx, carsImage);
+        }
         player.Draw(ctx, carsImage, 180);
 
         // Game Logic.
+        if(hasGameStart)
+        {
+            road.MoveDown(20);
+            player.x += horizontalInput * 20;
+
+            if(player.x - player.width / 2 < SCR_WIDTH * 0.2) {
+                player.x = SCR_WIDTH * 0.2 + player.width / 2;
+            }
+            else if(player.x + player.width / 2 > SCR_WIDTH * 0.8) {
+                player.x = SCR_WIDTH * 0.8 - player.width / 2;
+            }
+        }
+        else
+        {
+            
+        }
 
     }, FRAME_RATE);
 }
+
+
+
+function ScoreBoard(speed=0, distance=0) {
+    ctx.beginPath();
+    ctx.fillStyle = 'white';
+    ctx.font = "40px cursive";
+    ctx.fillText('Speed : ' + speed + 'km\\h', ctx.canvas.width * 0.05, 100);
+    ctx.fillText('Distance : ' + distance + 'km', ctx.canvas.width * 0.05, 160);
+    ctx.closePath();
+}
+
+function GameOver() {
+    ctx.beginPath();
+    ctx.fillStyle = 'red';
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 150px cursive';
+    ctx.fillText('Game Over', ctx.canvas.width/2, ctx.canvas.height * 0.4);
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.fillStyle = 'white';
+    ctx.textAlign = 'center';
+    ctx.font = '40px cursive';
+    ctx.fillText('Press Play to Restart Game', ctx.canvas.width/2, ctx.canvas.height * 0.7);
+    ctx.closePath();
+}
+
+// Handle keyboard inputs.
+window.addEventListener('keydown', function(event)
+{
+    if(event.key === 'ArrowLeft' || event.key === 'A' || event.key === 'a') {
+        horizontalInput = -1;
+    }
+    else if(event.key === 'ArrowRight' || event.key === 'D' || event.key === 'd') {
+        horizontalInput = 1;
+    }
+});
+window.addEventListener('keyup', function(event)
+{
+    horizontalInput = 0;
+});
+
+// Handle touch input, for touches devices like mobile phones.
+let touchStart;
+
+window.addEventListener('touchstart', function(event)
+{
+    touchStart = event.touches[0];
+});
+window.addEventListener('touchmove', function(event)
+{
+    if(touchStart.clientX < event.touches[0].clientX) {
+        horizontalInput = 1;
+    }
+    else {
+        horizontalInput = -1;
+    }
+});
+window.addEventListener('touchend', function(event)
+{
+    horizontalInput = 0;
+});
