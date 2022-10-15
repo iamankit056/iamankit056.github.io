@@ -18,8 +18,8 @@ class Car
         this.sheight = sheight;
         this.width = SCR_WIDTH * 0.1;
         this.height = SCR_HEIGHT * ((SCR_HEIGHT < SCR_WIDTH) ? 0.3 : 0.15);
-        this.x = (SCR_WIDTH - this.width) / 2; 
-        this.y = SCR_HEIGHT * 0.5;
+        this.x = SCR_WIDTH / 2; 
+        this.y = SCR_HEIGHT * 0.6;
     }
 
     Draw(ctx, carsImage, angleInDegree=0)
@@ -32,11 +32,6 @@ class Car
         ctx.restore();
         ctx.closePath();
     }
-}
-
-class SpawnManager
-{
-    
 }
 
 class Road 
@@ -97,7 +92,8 @@ function Gameplay()
         new Car(SCR_WIDTH, SCR_HEIGHT, 204, 259, 91, 192),
         new Car(SCR_WIDTH, SCR_HEIGHT, 337, 49, 81, 183)
     ];
-
+    
+    const player = cars[0];
 
     const gameInterval = setInterval(function()
     {
@@ -106,7 +102,7 @@ function Gameplay()
 
         // Render objects.
         road.Draw(ctx);
-        cars[0].Draw(ctx, carsImage, 180);
+        player.Draw(ctx, carsImage, 180);
 
         // Game Logic.
 
