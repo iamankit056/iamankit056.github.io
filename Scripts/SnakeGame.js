@@ -1,17 +1,3 @@
-const ctx = document.querySelector('canvas').getContext('2d');
-const playBtn = document.querySelector('button');
-
-const Input = 
-{
-    'Vertical': 0,
-    'Horizontal': 0,
-    'Reset': function() 
-    {
-        this.Horizontal = 0;
-        this.Vertical = 0;
-    }
-};
-
 class Snake 
 {
     constructor(life=3, tiles) 
@@ -96,6 +82,20 @@ class Food
     {
         this.x = Math.floor(Math.random() * tiles.x) * this.size;
         this.y = Math.floor(Math.random() * tiles.y) * this.size;
+    }
+};
+
+const ctx = document.querySelector('canvas').getContext('2d');
+const playBtn = document.querySelector('button');
+
+const Input = 
+{
+    'Vertical': 0,
+    'Horizontal': 0,
+    'Reset': function() 
+    {
+        this.Horizontal = 0;
+        this.Vertical = 0;
     }
 };
 

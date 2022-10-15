@@ -1,21 +1,10 @@
-const ctx = document.querySelector('canvas').getContext('2d');
-const playBtn = document.querySelector('button');
-
-const carsImage = document.querySelector('#cars');
-const roadImage = document.querySelector('#road');
-const crashSoundEffect = document.querySelector('#crashSoundEffect');
-const startSoundEffect = document.querySelector('#startSoundEffect');
-const drivingSoundEffect = document.querySelector('#drivingSoundEffect');
-const countDownSoundEffect = document.querySelector('#countDownSoundEffect');
-
-let horizontalInput = 0;
-
 class Car
 {
-    constructor(x=0, y=0, SCR_WIDTH=0, SCR_HEIGHT=0, carModelIndex=0, angleInDegree=0)
+    constructor(speed=0, SCR_WIDTH=0, SCR_HEIGHT=0, carModelIndex=0, angleInDegree=0)
     {
-        this.x = x; 
-        this.y = y;
+        this.speed = speed;
+        this.x = SCR_WIDTH / 2; 
+        this.y = SCR_HEIGHT * 0.8;
         this.width = SCR_WIDTH * 0.1;
         this.modelIndex = carModelIndex;
         this.angle = angleInDegree * Math.PI / 180;
@@ -56,7 +45,7 @@ class Car
 
         return false;
     }
-}
+};
 
 class Road 
 {
@@ -84,9 +73,20 @@ class Road
             this.y = -(this.height/2);
         }
     }
-}
+};
 
-Gameplay();
+const ctx = document.querySelector('canvas').getContext('2d');
+const playBtn = document.querySelector('button');
+
+const carsImage = document.querySelector('#cars');
+const roadImage = document.querySelector('#road');
+const crashSoundEffect = document.querySelector('#crashSoundEffect');
+const startSoundEffect = document.querySelector('#startSoundEffect');
+const drivingSoundEffect = document.querySelector('#drivingSoundEffect');
+const countDownSoundEffect = document.querySelector('#countDownSoundEffect');
+
+let horizontalInput = 0;
+let hasGameStart = false;
 
 function Gameplay()
 {
@@ -108,10 +108,11 @@ function Gameplay()
     const SCR_HEIGHT = ctx.canvas.height;
 
     const road = new Road(roadImage, SCR_WIDTH, SCR_HEIGHT);
-    const player = new Car(SCR_WIDTH / 2, SCR_HEIGHT * 0.8, SCR_WIDTH, SCR_HEIGHT, 0, 180);
+    const player = new Car(20, SCR_WIDTH, SCR_HEIGHT, 0, 180);
     const cars = [];
+    const spawnRate = Math.random(200, 600);
 
-    let hasGameStart = false;
+    SpawnRandomCars(cars, spawnRate, SCR_WIDTH, SCR_HEIGHT);
 
     const gameInterval = setInterval(function()
     {
@@ -127,27 +128,69 @@ function Gameplay()
         player.Draw(ctx, carsImage, 180);
 
         // Game Logic.
-        if(hasGameStart)
+        if(!hasGameStart)
         {
-            road.MoveDown(20);
+            road.MoveDown(player.speed);
             player.x += horizontalInput * 20;
 
+            // Bound player movement.
             if(player.x - player.width / 2 < SCR_WIDTH * 0.2) {
                 player.x = SCR_WIDTH * 0.2 + player.width / 2;
             }
             else if(player.x + player.width / 2 > SCR_WIDTH * 0.8) {
                 player.x = SCR_WIDTH * 0.8 - player.width / 2;
             }
+
+            for(let i=0; i < cars.length; i++)
+            {
+                // Car move top to down.
+                cars[i].y += cars[i].speed;
+
+                // Destory out of bound.
+                if(cars[i].y - cars[i].height > SCR_HEIGHT) {
+                    cars.splice(i, 1);
+                }
+
+                // Stop the game when player collide with car.
+                if(player.Collision(cars[i])) 
+                {
+                    // console.log('car collide with player car.');
+                    clearInterval(gameInterval);
+                }
+                
+            }
         }
         else
         {
-            
+
         }
 
     }, FRAME_RATE);
 }
 
+function SpawnRandomCars(cars=[], spawnRate=0, SCR_WIDTH=0, SCR_HEIGHT=0)
+{
+    setTimeout(function()
+    {
+        const minSpeed = 40;
+        const maxspeed = 60;
+        const speed = Math.floor(Math.random() * (maxspeed - minSpeed) + minSpeed);
+        const car = new Car(speed, SCR_WIDTH, SCR_HEIGHT);
+        const minRangeX = SCR_WIDTH * 0.2 + car.width / 2;
+        const maxRangeX = SCR_WIDTH * 0.8 - car.width / 2;
+        
+        car.x = Math.floor(Math.random() * (maxRangeX - minRangeX) + minRangeX);
+        car.y = -car.height;
+        car.modelIndex = Math.floor(Math.random() * (car.models.length-1));
+        
+        cars.push(car);
+        const minSpawnRate = 700;
+        const maxSpawnRate = 1500;
+        const carSpawnRate = Math.random() * (maxSpawnRate - minSpawnRate) + minSpawnRate;
+        SpawnRandomCars(cars, carSpawnRate, SCR_WIDTH, SCR_HEIGHT);
 
+    }, spawnRate);
+}
 
 function ScoreBoard(speed=0, distance=0) {
     ctx.beginPath();
