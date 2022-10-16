@@ -191,6 +191,7 @@ function ScoreBoard(life=0, score=0) {
     ctx.beginPath();
     ctx.fillStyle = 'white';
     ctx.font = "40px cursive";
+    ctx.textAlign = 'left';
     ctx.fillText('Life : ' + life, ctx.canvas.width * 0.05, 100);
     ctx.fillText('Score : ' + score, ctx.canvas.width * 0.05, 160);
     ctx.closePath();
