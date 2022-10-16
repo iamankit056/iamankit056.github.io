@@ -80,7 +80,17 @@ section {
         display: inline;
     }
     .nav-links {
-        display: none;
+        position: fixed;
+        top: -16vh;
+        left: 0px;
+        width: 100%;
+        background-color: black;
+        transition: ease-in-out 1s;
+        z-index: -1;
+    }
+    .nav-links li {
+        margin: 5%;
+        display: block;
     }
     section {
         margin: 10vh 5%;
