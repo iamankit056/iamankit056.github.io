@@ -19,12 +19,30 @@ header {
     color: white;
     background-color: black;
 }
+header h1 {
+    font-size: 1.5rem;
+    font-style: italic;
+}
+.toggle-btn {
+    display: none;
+}
+.nav-links li {
+    margin: 0px 10px;
+    list-style: none;
+    display: inline;
+}
+.nav-links li a {
+    color: white;
+    text-decoration: none;
+}
 section {
-    margin: 5%;
+    margin: 15vh 5%;
 }
 .title {
-    font-size: 2.5rem;
     margin-bottom: 20px;
+    font-size: 2.5rem;
+    color: white;
+    text-shadow: 1px 1px 2px black, 0px 0px 25px blue, 0px 0px 5px darkblue;
 }
 .game-collection {
     display: grid;
@@ -36,6 +54,12 @@ section {
     width: 100%;
     height: auto;
     border-radius: 10px;
+}
+.game:hover {
+    box-shadow: 10px 10px 5px #aaaaaa;
+}
+.game-title {
+    margin: 10px 5%;
 }
 .game-link {
     color: black;
@@ -50,5 +74,15 @@ section {
 {
     .game-collection {
         grid-template-columns: auto;
+    }
+
+    .toggle-btn {
+        display: inline;
+    }
+    .nav-links {
+        display: none;
+    }
+    section {
+        margin: 10vh 5%;
     }
 }
