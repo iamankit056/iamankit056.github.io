@@ -177,7 +177,7 @@ function Gameplay()
 
         if(snake.life < 1) 
         {
-            GameOver();
+            GameOver(ctx);
             playBtn.style.display = 'inline';
             clearInterval(gameInterval); 
         }
@@ -196,7 +196,7 @@ function ScoreBoard(life=0, score=0) {
     ctx.closePath();
 }
 
-function GameOver() {
+function GameOver(ctx) {
     ctx.beginPath();
     ctx.fillStyle = 'red';
     ctx.textAlign = 'center';
