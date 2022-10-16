@@ -75,7 +75,6 @@ section {
     .game-collection {
         grid-template-columns: auto;
     }
-
     .toggle-btn {
         display: inline;
     }
