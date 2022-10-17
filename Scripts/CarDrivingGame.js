@@ -90,7 +90,6 @@ const startSoundEffect = document.querySelector('#startSoundEffect');
 const drivingSoundEffect = document.querySelector('#drivingSoundEffect');
 const countDownSoundEffect = document.querySelector('#countDownSoundEffect');
 
-let horizontalInput = 0;
 let hasGameStart = false;
 
 function Gameplay()
@@ -111,21 +110,33 @@ function Gameplay()
     const FRAME_RATE = 41.6667; 
     const SCR_WIDTH  = ctx.canvas.width;
     const SCR_HEIGHT = ctx.canvas.height;
-
+    const speedBoard = 
+        new UI(SCR_WIDTH * 0.05, 100, 'Speed : ', 'white', '40px Arial', 'left');
+    const distanceBoard = 
+        new UI(SCR_WIDTH * 0.05, 160, 'Distance : ', 'white', '40px Arial', 'left');
+    const gameOverMessage = 
+        new UI(ctx.canvas.width/2, ctx.canvas.height * 0.4, 'Game Over', 'red', 'bold 150px cursive', 'center');
+    const gameRestartMessage = 
+        new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'white', '40px cursive', 'center');
+    const cars = [];
     const road = new Road(roadImage, SCR_WIDTH, SCR_HEIGHT);
     const player = new Car(20, SCR_WIDTH, SCR_HEIGHT, 0, 180);
-    const cars = [];
-    const spawnRate = Math.random(200, 600);
     const playerFinalPositionOnY = SCR_HEIGHT * 0.6;
+    const playerInput = new Input();
+    const spawnRate = Math.random(200, 600);
     const Animation = {
         'isComplete': false,
         'countDown': 3,
         'text': '',
         'delay': 1500, // 2second
-        'time': 1500
+        'time': 1500, 
+        'UI': new UI(SCR_WIDTH/2, SCR_HEIGHT/2, '', 'white', 'bold 200px cursive', 'center')
     };
 
     let distanceTraveledByPlayer = 0;
+
+    // Start listening player input.
+    playerInput.StartListener();
 
     // Game Loop.
     const gameInterval = setInterval(function()
@@ -135,7 +146,9 @@ function Gameplay()
 
         // Render objects.
         road.Draw(ctx);
-        ScoreBoard(ctx, player.speed, distanceTraveledByPlayer, SCR_WIDTH);
+
+        speedBoard.Draw(ctx, player.speed+'km/h');
+        distanceBoard.Draw(ctx, Math.floor(distanceTraveledByPlayer)+'m');
 
         for(let i=0; i < cars.length; i++) {
             cars[i].Draw(ctx, carsImage);
@@ -159,7 +172,8 @@ function Gameplay()
                 // Stop the game when player collide with car.
                 if(player.Collision(cars[i])) 
                 {
-                    GameOver(ctx);
+                    gameOverMessage.Draw(ctx);
+                    gameRestartMessage.Draw(ctx);
                     hasGameStart = false;
                     drivingSoundEffect.pause();
                     crashSoundEffect.play();
@@ -171,7 +185,7 @@ function Gameplay()
 
             // Player driving code.
             road.MoveDown(player.speed);
-            player.x += horizontalInput * 20;
+            player.x += playerInput.Horizontal * player.speed;
 
             // Bound player movement.
             let playerHalfWidth = player.width / 2;
@@ -207,7 +221,7 @@ function Gameplay()
             }
             else 
             {
-                RenderAnimation(ctx, Animation, SCR_WIDTH, SCR_HEIGHT);
+                Animation.UI.Draw(ctx, Animation.text);
 
                 if(Animation.time >= Animation.delay) 
                 {
@@ -238,16 +252,6 @@ function Gameplay()
     }, FRAME_RATE);
 }
 
-function RenderAnimation(ctx, Animation={}, SCR_WIDTH=0, SCR_HEIGHT=0)
-{
-    ctx.beginPath();
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 200px cursive';
-    ctx.textAlign = 'center';
-    ctx.fillText(Animation.text, SCR_WIDTH/2, SCR_HEIGHT/2);
-    ctx.closePath();
-}
-
 function SpawnRandomCars(cars=[], spawnRate=0, SCR_WIDTH=0, SCR_HEIGHT=0)
 {
     setTimeout(function()
@@ -275,64 +279,3 @@ function SpawnRandomCars(cars=[], spawnRate=0, SCR_WIDTH=0, SCR_HEIGHT=0)
 
     }, spawnRate);
 }
-
-function ScoreBoard(ctx, speed=0, distance=0, SCR_WIDTH=0) {
-    ctx.beginPath();
-    ctx.fillStyle = 'white';
-    ctx.font = "40px cursive";
-    ctx.textAlign = 'left';
-    ctx.fillText('Speed : ' + speed + 'km\\h', SCR_WIDTH * 0.05, 100);
-    ctx.fillText('Distance : ' + Math.floor(distance) + 'm', SCR_WIDTH * 0.05, 160);
-    ctx.closePath();
-}
-
-function GameOver(ctx) {
-    ctx.beginPath();
-    ctx.fillStyle = 'red';
-    ctx.textAlign = 'center';
-    ctx.font = 'bold 150px cursive';
-    ctx.fillText('Game Over', ctx.canvas.width/2, ctx.canvas.height * 0.4);
-    ctx.closePath();
-    ctx.beginPath();
-    ctx.fillStyle = 'white';
-    ctx.textAlign = 'center';
-    ctx.font = '40px cursive';
-    ctx.fillText('Press Play to Restart Game', ctx.canvas.width/2, ctx.canvas.height * 0.7);
-    ctx.closePath();
-}
-
-// Handle keyboard inputs.
-window.addEventListener('keydown', function(event)
-{
-    if(event.key === 'ArrowLeft' || event.key === 'A' || event.key === 'a') {
-        horizontalInput = -1;
-    }
-    else if(event.key === 'ArrowRight' || event.key === 'D' || event.key === 'd') {
-        horizontalInput = 1;
-    }
-});
-window.addEventListener('keyup', function(event)
-{
-    horizontalInput = 0;
-});
-
-// Handle touch input, for touches devices like mobile phones.
-let touchStart;
-
-window.addEventListener('touchstart', function(event)
-{
-    touchStart = event.touches[0];
-});
-window.addEventListener('touchmove', function(event)
-{
-    if(touchStart.clientX < event.touches[0].clientX) {
-        horizontalInput = 1;
-    }
-    else {
-        horizontalInput = -1;
-    }
-});
-window.addEventListener('touchend', function(event)
-{
-    horizontalInput = 0;
-});
