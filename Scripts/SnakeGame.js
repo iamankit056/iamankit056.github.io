@@ -7,6 +7,10 @@ class Snake
         this.size = tiles.size;
         this.ResetBody(tiles);
         this.hasFoodEat = false;
+        this.direction = {
+            'x': 0,
+            'y': 0
+        };
     }
 
     Draw(ctx)
@@ -36,11 +40,11 @@ class Snake
         });
     }
 
-    Movement(Input)
+    Move()
     {
         this.Body.unshift({
-            'x': this.Body[0].x + Input.Horizontal * this.size,
-            'y': this.Body[0].y + Input.Vertical * this.size,
+            'x': this.Body[0].x + this.direction.x * this.size,
+            'y': this.Body[0].y + this.direction.y * this.size,
         });
 
         if(!this.hasFoodEat) {
@@ -48,6 +52,14 @@ class Snake
         } else {
             this.hasFoodEat = false;
         }
+    }
+
+    Die(tiles)
+    {
+        this.direction.x = 0;
+        this.direction.y = 0;
+        this.life -= 1;
+        this.ResetBody(tiles);
     }
 
     Eat(food) 
@@ -88,17 +100,6 @@ class Food
 const ctx = document.querySelector('canvas').getContext('2d');
 const playBtn = document.querySelector('button');
 
-const Input = 
-{
-    'Vertical': 0,
-    'Horizontal': 0,
-    'Reset': function() 
-    {
-        this.Horizontal = 0;
-        this.Vertical = 0;
-    }
-};
-
 function Gameplay()
 {
     // Hide play button when user click it.
@@ -117,21 +118,27 @@ function Gameplay()
     const FRAME_RATE = 41.6667; 
     const SCR_WIDTH  = ctx.canvas.width;
     const SCR_HEIGHT = ctx.canvas.height;
-
+    const lifeBoard = 
+        new UI(SCR_WIDTH * 0.05, 100, 'life : ', 'white', '40px Arial', 'left');
+    const scoreBoard = 
+        new UI(SCR_WIDTH * 0.05, 160, 'Score : ', 'white', '40px Arial', 'left');
+    const gameOverMessage = 
+        new UI(ctx.canvas.width/2, ctx.canvas.height * 0.4, 'Game Over', 'red', 'bold 150px cursive', 'center');
+    const gameRestartMessage = 
+        new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'white', '40px cursive', 'center');
     const TILE_SIZE = 20;
-    const tiles = 
-    {
+    const tiles = {
         'size': TILE_SIZE,
         'x': SCR_WIDTH / TILE_SIZE,
         'y': SCR_HEIGHT / TILE_SIZE
     };
-
     const food  = new Food(tiles);
     const snake = new Snake(3, tiles);
+    const playerInput = new Input();
 
     let score = 0;
 
-    Input.Reset();
+    playerInput.StartListener();
     food.GenerateRandomPosition(tiles);
 
     // Game Loop.
@@ -143,7 +150,8 @@ function Gameplay()
         // Render objects.
         food.Draw(ctx);
         snake.Draw(ctx);
-        ScoreBoard(snake.life, score);
+        lifeBoard.Draw(ctx, snake.life.toString());
+        scoreBoard.Draw(ctx, score.toString());
 
         // Game Logic.
         if(snake.Eat(food)) 
@@ -158,127 +166,35 @@ function Gameplay()
         {
             if(snake.Body[0].x < snake.Body[i].x + snake.size && snake.Body[0].x + snake.size > snake.Body[i].x && 
                 snake.Body[0].y < snake.Body[i].y + snake.size && snake.Body[0].y + snake.size > snake.Body[i].y) {
-                    Input.Reset();
-                    snake.life -= 1;
-                    snake.ResetBody(tiles);
+                    snake.Die(tiles);
                     food.GenerateRandomPosition(tiles);
-                    // console.log('snake bite it self.');
             }
         }
 
         if(snake.Body[0].x < 0  || snake.Body[0].x > SCR_WIDTH || 
             snake.Body[0].y < 0 || snake.Body[0].y > SCR_HEIGHT) {
-                Input.Reset();
-                snake.life -= 1;
-                snake.ResetBody(tiles);
+                snake.Die(tiles);
                 food.GenerateRandomPosition(tiles);
-                // console.log('snake collide with wall.')
         }
 
         if(snake.life < 1) 
         {
-            GameOver(ctx);
+            gameOverMessage.Draw(ctx);
+            gameRestartMessage.Draw(ctx);
             playBtn.style.display = 'inline';
             clearInterval(gameInterval); 
         }
 
-        snake.Movement(Input);
+        if(Math.abs(playerInput.Horizontal) > 0 && snake.direction.x == 0) {
+            snake.direction.y = 0;
+            snake.direction.x = playerInput.Horizontal;
+        }
+        else if(Math.abs(playerInput.Vertical) > 0 && snake.direction.y == 0) {
+            snake.direction.x = 0;
+            snake.direction.y = playerInput.Vertical;
+        }
+
+        snake.Move();
 
     }, FRAME_RATE);
-}
-
-function ScoreBoard(life=0, score=0) {
-    ctx.beginPath();
-    ctx.fillStyle = 'white';
-    ctx.font = "40px cursive";
-    ctx.textAlign = 'left';
-    ctx.fillText('Life : ' + life, ctx.canvas.width * 0.05, 100);
-    ctx.fillText('Score : ' + score, ctx.canvas.width * 0.05, 160);
-    ctx.closePath();
-}
-
-function GameOver(ctx) {
-    ctx.beginPath();
-    ctx.fillStyle = 'red';
-    ctx.textAlign = 'center';
-    ctx.font = 'bold 150px cursive';
-    ctx.fillText('Game Over', ctx.canvas.width/2, ctx.canvas.height * 0.4);
-    ctx.closePath();
-    ctx.beginPath();
-    ctx.fillStyle = 'white';
-    ctx.textAlign = 'center';
-    ctx.font = '40px cursive';
-    ctx.fillText('Press Play to Restart Game', ctx.canvas.width/2, ctx.canvas.height * 0.7);
-    ctx.closePath();
-}
-
-// Handle keyboard inputs
-window.addEventListener('keydown', function(event)
-{
-    if(event.key === 'ArrowLeft' && Input.Horizontal == 0) {
-        Input.Vertical = 0;
-        Input.Horizontal = -1;
-    }
-    if(event.key === 'ArrowRight' && Input.Horizontal == 0) {
-        Input.Vertical = 0;
-        Input.Horizontal = 1;
-    }
-    if(event.key === 'ArrowUp' && Input.Vertical == 0) {
-        Input.Vertical = -1;
-        Input.Horizontal = 0;
-    }
-    if(event.key === 'ArrowDown' && Input.Vertical == 0) {
-        Input.Vertical = 1;
-        Input.Horizontal = 0;
-    }
-});
-
-{   // Handle touch input, for touches devices like mobile phones.
-    const touch = {
-        'start': {},
-        'delta': {},
-        'hasTouch': false
-    };
-
-    window.addEventListener('touchstart', function(event)
-    {
-        touch.start = {
-            'x': event.touches[0].clientX,
-            'y': event.touches[0].clientY
-        };
-
-        touch.hasTouch = true;
-    });
-    window.addEventListener('touchmove', function(event)
-    {
-        touch.delta = {
-            'x': event.touches[0].clientX - touch.start.x,
-            'y': event.touches[0].clientY - touch.start.y
-        };
-        
-        if(Math.abs(touch.start.x) > Math.abs(touch.delta.y) && touch.hasTouch && Input.Horizontal == 0)
-        {
-            if(touch.delta.x < 0) {
-                Input.Horizontal = -1;
-            }
-            if(touch.delta.x > 0) {
-                Input.Horizontal = 1;
-            }
-
-            Input.Vertical = 0;
-        }
-        else if(Input.Vertical == 0 && touch.hasTouch)
-        {
-            if(touch.delta.y < 0) {
-                Input.Vertical = -1;
-            }
-            if(touch.delta.y > 0) {
-                Input.Vertical = 1;
-            }
-
-            Input.Horizontal = 0;
-        }
-
-        touch.hasTouch = false;
-    });
 }

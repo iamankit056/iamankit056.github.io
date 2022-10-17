@@ -4,6 +4,11 @@ class Input
     {
         this.Vertical = 0;
         this.Horizontal = 0;
+
+        this.touchPosition = {
+            'x': 0,
+            'y': 0
+        }
     }
 
     StartListener()
@@ -31,29 +36,46 @@ class Input
         // Listen touch input.
         const startTouchPosition = {};
         window.addEventListener('touchstart', (event)=>{
-            startTouchPosition = {
-                'x': event.touches[0].clientX,
-                'y': event.touches[0].clientY
-            };
+            this.touchPosition.x = startTouchPosition.x = event.touches[0].clientX;
+            this.touchPosition.y = startTouchPosition.y = event.touches[0].clientY;
         });
         window.addEventListener('touchmove', (event)=> {
-            const deltaTouchPosition = startTouchPosition = {
+            const deltaTouchPosition = {
                 'x': event.touches[0].clientX - startTouchPosition.x,
                 'y': event.touches[0].clientY - startTouchPosition.y
             };
 
-            if(deltaTouchPosition.x > deltaTouchPosition.y) 
+            if(Math.abs(deltaTouchPosition.x) > Math.abs(deltaTouchPosition.y)) 
             {
-
+                if(deltaTouchPosition.x < 0) {
+                    this.Horizontal = -1;
+                }
+                else {
+                    this.Horizontal = 1;                    
+                }
             }
             else 
             {
-
+                if(deltaTouchPosition.y < 0) {
+                    this.Vertical = -1;
+                }
+                else {
+                    this.Vertical = 1;                    
+                }
             }
         });
         window.addEventListener('touchend', (event)=>{
-            this.Vertical = 0;
-            this.Horizontal = 0;
+            this.touchPosition.x = this.Vertical = 0;
+            this.touchPosition.y = this.Horizontal = 0;
         });
+    }
+
+    HasTouched(x=0, y=0, width=0, height=0)
+    {
+        if(this.touchPosition.x > x && this.touchPosition.x < x + width &&
+            this.touchPosition.y > y && this.touchPosition.y < y + height) {
+                return true;
+        }
+        return false;
     }
 }
