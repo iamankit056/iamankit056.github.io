@@ -119,7 +119,7 @@ function Gameplay()
     const SCR_WIDTH  = ctx.canvas.width;
     const SCR_HEIGHT = ctx.canvas.height;
     const lifeBoard = 
-        new UI(SCR_WIDTH * 0.05, 100, 'life : ', 'white', '40px Arial', 'left');
+        new UI(SCR_WIDTH * 0.05, 100, 'Life : ', 'white', '40px Arial', 'left');
     const scoreBoard = 
         new UI(SCR_WIDTH * 0.05, 160, 'Score : ', 'white', '40px Arial', 'left');
     const gameOverMessage = 
