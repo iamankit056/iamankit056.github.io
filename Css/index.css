@@ -75,7 +75,6 @@ section {
     .game-collection {
         grid-template-columns: auto;
     }
-
     .toggle-btn {
         display: inline;
     }
@@ -91,8 +90,5 @@ section {
     .nav-links li {
         margin: 5%;
         display: block;
-    }
-    section {
-        margin: 10vh 5%;
     }
 }
