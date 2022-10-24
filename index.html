@@ -26,6 +26,10 @@
                 <i class="fa-brands fa-linkedin"></i>
                 <i>Linked in</i>
             </a></li>
+            <li><a href="https://www.github.com/iamankit056/iamankit056.github.io">
+                <i class="fa-sharp fa-solid fa-link"></i>
+                <i>Source Code</i>
+            </a></li>
         </ul>
 
         <div class="toggle-btn" onclick="NavigationWindow()">
@@ -59,18 +63,18 @@
         function NavigationWindow()
         {
             if(hasNavigationWindowActive) {
-                navLinks.style.top = '-16vh';
+                navLinks.style.left = '100%';
                 hasNavigationWindowActive = false;
             }
             else {
-                navLinks.style.top = '8vh';
+                navLinks.style.left = '40%';
                 hasNavigationWindowActive = true;
             }
         }
 
         for(let i=0; i < navLinks.children.length; i++) {
             navLinks.children[i].addEventListener('click', function() {
-                navLinks.style.top = '-16vh';
+                navLinks.style.left = '100%';
             })
         }
     </script>
