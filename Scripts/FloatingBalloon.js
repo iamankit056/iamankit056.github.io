@@ -63,7 +63,10 @@ function Gameplay()
         new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'white', '40px cursive', 'center');
     const TILE_SIZE = 20;
 
-    const balloon = new Object();
+    const townBackground = new Object(townBackgroundTexture, 0, 0, SCR_WIDTH, SCR_HEIGHT);
+    // const balloon = new Object();
+    // const boom = new Object();
+    // const coin = new Object();
 
     // Game Loop.
     const gameInterval = setInterval(function() 
@@ -72,6 +75,7 @@ function Gameplay()
         ctx.clearRect(0, 0, SCR_WIDTH, SCR_HEIGHT);
         
         // Render objects.
+        townBackground.Draw(ctx);
 
         // Game Logic
 
