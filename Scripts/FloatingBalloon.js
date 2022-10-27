@@ -1,5 +1,39 @@
+class Object 
+{
+    constructor(texture=new Image(), x=0, y=0, width=0, height=0)
+    {
+        this.texture = texture;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    Draw(ctx=new CanvasRenderingContext2D())
+    {
+        ctx.beginPath();
+        ctx.drawImage(this.texture, this.x, this.y, this.width, this.height);
+        ctx.closePath();
+    }
+
+    Collider(collide)
+    {
+        if(this.x < collide.x+collide.width && this.x+this.width > collide.x &&
+            this.y < collide.y+collide.height && this.y+this.height > collide.y) {
+                return true;
+        }
+
+        return false;
+    }
+}
+
 const ctx = document.querySelector('canvas').getContext('2d');
 const playBtn = document.querySelector('button');
+
+const townBackgroundTexture = document.querySelector("#TownBackground");
+const balloonTexture = document.querySelector("#Balloon");
+const boomTexture = document.querySelector("#Boom");
+const coinTexture = document.querySelector("#Coin");
 
 function Gameplay()
 {
@@ -29,6 +63,7 @@ function Gameplay()
         new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'white', '40px cursive', 'center');
     const TILE_SIZE = 20;
 
+    const balloon = new Object();
 
     // Game Loop.
     const gameInterval = setInterval(function() 
