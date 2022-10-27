@@ -35,6 +35,8 @@ const balloonTexture = document.querySelector("#Balloon");
 const boomTexture = document.querySelector("#Boom");
 const coinTexture = document.querySelector("#Coin");
 
+Gameplay();
+
 function Gameplay()
 {
     // Hide play button when user click it.
@@ -53,6 +55,7 @@ function Gameplay()
     const FRAME_RATE = 41.6667; 
     const SCR_WIDTH  = ctx.canvas.width;
     const SCR_HEIGHT = ctx.canvas.height;
+
     const lifeLineBoard = 
         new UI(SCR_WIDTH * 0.05, 100, 'Life Line : ', 'white', '40px Arial', 'left');
     const scoreBoard = 
@@ -61,12 +64,15 @@ function Gameplay()
         new UI(ctx.canvas.width/2, ctx.canvas.height * 0.4, 'Game Over', 'red', 'bold 150px cursive', 'center');
     const gameRestartMessage = 
         new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'white', '40px cursive', 'center');
-    const TILE_SIZE = 20;
 
-    const townBackground = new Object(townBackgroundTexture, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-    // const balloon = new Object();
-    // const boom = new Object();
-    // const coin = new Object();
+    const townBackground = 
+        new Object(townBackgroundTexture, 0, 0, SCR_WIDTH * (SCR_WIDTH > SCR_HEIGHT ? 2 : 4), SCR_HEIGHT);
+    const balloon = 
+        new Object(balloonTexture, SCR_WIDTH*0.25, SCR_HEIGHT*0.3, 80, 240);
+    const boom = new Object(boomTexture, 500, 500, 100, 100);
+    const coin = new Object(coinTexture, 500, 500, 80, 80);
+
+    
 
     // Game Loop.
     const gameInterval = setInterval(function() 
@@ -76,8 +82,22 @@ function Gameplay()
         
         // Render objects.
         townBackground.Draw(ctx);
+        balloon.Draw(ctx);
+        coin.Draw(ctx);
+        boom.Draw(ctx);
 
         // Game Logic
+        townBackground.x -= 20;
+        if(Math.abs(townBackground.x) > townBackground.width/2) {
+            townBackground.x = 0;
+        }
+
+        // Move balloon up and down make illusion of gravity.
+
+        balloon.y += 10;
+        if(balloon.y+balloon.height/2 > SCR_HEIGHT) {
+            balloon.y = SCR_HEIGHT - balloon.height/2;
+        }
 
 
     }, FRAME_RATE);
