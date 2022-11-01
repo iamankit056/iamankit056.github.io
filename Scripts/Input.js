@@ -4,6 +4,7 @@ class Input
     {
         this.Vertical = 0;
         this.Horizontal = 0;
+        this.Jump = false;
 
         this.touchPosition = {
             'x': 0,
@@ -27,10 +28,14 @@ class Input
             else if(event.key === 'ArrowDown') {
                 this.Vertical = 1;
             }
+            else if(event.key === ' ') {
+                this.Jump = true;
+            }
         });
         window.addEventListener('keyup', (event)=>{
             this.Vertical = 0;
             this.Horizontal = 0;
+            this.Jump = false;
         });
 
         // Listen touch input.

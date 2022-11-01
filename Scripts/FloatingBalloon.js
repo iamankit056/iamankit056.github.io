@@ -72,6 +72,9 @@ function Gameplay()
     const boom = new Object(boomTexture, 500, 500, 100, 100);
     const coin = new Object(coinTexture, 500, 500, 80, 80);
 
+    const playerInput = new Input();
+
+    playerInput.StartListener();
     
 
     // Game Loop.
@@ -93,7 +96,6 @@ function Gameplay()
         }
 
         // Move balloon up and down make illusion of gravity.
-
         balloon.y += 10;
         if(balloon.y+balloon.height/2 > SCR_HEIGHT) {
             balloon.y = SCR_HEIGHT - balloon.height/2;
