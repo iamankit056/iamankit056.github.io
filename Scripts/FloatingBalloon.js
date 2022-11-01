@@ -29,11 +29,16 @@ class Object
 
 const ctx = document.querySelector('canvas').getContext('2d');
 const playBtn = document.querySelector('button');
-
+// Textures
 const townBackgroundTexture = document.querySelector("#TownBackground");
 const balloonTexture = document.querySelector("#Balloon");
 const boomTexture = document.querySelector("#Boom");
 const coinTexture = document.querySelector("#Coin");
+// sound Effects
+const boomSoundEffect = document.querySelector('#BoomSoundEffect');
+const blipSoundEffect = document.querySelector('#BlipSoundEffect');
+const boingSoundEffect = document.querySelector('#BoingSoundEffect');
+const backgroundSoundEffect = document.querySelector('#BackgroundSoundEffect');
 
 let hasGameStart = false;
 
@@ -83,6 +88,8 @@ function Gameplay()
     playerInput.StartListener();
     // True hasGameStart variable to start game.
     hasGameStart = true;
+    // Start background music.
+    backgroundSoundEffect.play();
     // Start spawning coins and booms.
     SpawnRandomCoinsAndBooms(coins, booms, spawnDelay, SCR_WIDTH, SCR_HEIGHT);
 
@@ -162,6 +169,7 @@ function Gameplay()
                 gameOverMessage.Draw(ctx);
                 gameRestartMessage.Draw(ctx);
                 playBtn.style.display = 'inline';
+                backgroundSoundEffect.pause();
                 clearInterval(gameInterval);
             }
             // If Destroy coin is true then Destroy the coin.
