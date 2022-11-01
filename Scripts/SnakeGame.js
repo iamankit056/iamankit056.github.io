@@ -100,6 +100,10 @@ class Food
 const ctx = document.querySelector('canvas').getContext('2d');
 const playBtn = document.querySelector('button');
 
+// sound Effects
+const boomSoundEffect = document.querySelector('#BoomSoundEffect');
+const boingSoundEffect = document.querySelector('#BoingSoundEffect');
+
 function Gameplay()
 {
     // Hide play button when user click it.
@@ -158,6 +162,7 @@ function Gameplay()
         {
             score += 5;
             snake.hasFoodEat = true;
+            boingSoundEffect.play();
             food.GenerateRandomPosition(tiles);
             // console.log('snake eat food.');
         }
@@ -167,6 +172,7 @@ function Gameplay()
             if(snake.Body[0].x < snake.Body[i].x + snake.size && snake.Body[0].x + snake.size > snake.Body[i].x && 
                 snake.Body[0].y < snake.Body[i].y + snake.size && snake.Body[0].y + snake.size > snake.Body[i].y) {
                     snake.Die(tiles);
+                    boomSoundEffect.play();
                     food.GenerateRandomPosition(tiles);
             }
         }
@@ -174,6 +180,7 @@ function Gameplay()
         if(snake.Body[0].x < 0  || snake.Body[0].x > SCR_WIDTH || 
             snake.Body[0].y < 0 || snake.Body[0].y > SCR_HEIGHT) {
                 snake.Die(tiles);
+                boomSoundEffect.play();
                 food.GenerateRandomPosition(tiles);
         }
 

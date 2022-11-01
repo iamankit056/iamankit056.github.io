@@ -29,14 +29,15 @@ class Object
 
 const ctx = document.querySelector('canvas').getContext('2d');
 const playBtn = document.querySelector('button');
+
 // Textures
 const townBackgroundTexture = document.querySelector("#TownBackground");
 const balloonTexture = document.querySelector("#Balloon");
 const boomTexture = document.querySelector("#Boom");
 const coinTexture = document.querySelector("#Coin");
+
 // sound Effects
 const boomSoundEffect = document.querySelector('#BoomSoundEffect');
-const blipSoundEffect = document.querySelector('#BlipSoundEffect');
 const boingSoundEffect = document.querySelector('#BoingSoundEffect');
 const backgroundSoundEffect = document.querySelector('#BackgroundSoundEffect');
 
@@ -102,15 +103,12 @@ function Gameplay()
         // Render objects.
         townBackground.Draw(ctx);
         balloon.Draw(ctx);
-        // Coins.
         for(let i=0; i<coins.length; i++) {
             coins[i].Draw(ctx);
         }
-        // Booms.
         for(let i=0; i<booms.length; i++) {
             booms[i].Draw(ctx);
         }
-        // Scoreboard.
         scoreBoard.Draw(ctx, score);
 
         // Game Logic
@@ -123,6 +121,7 @@ function Gameplay()
         if(playerInput.Jump) {
             balloon.y -= jumpForce;
         }
+
         // Move balloon up and down make illusion of gravity.
         balloon.y += gravity;
         // Bound the balloon that it's not cross the screen.        
@@ -135,51 +134,58 @@ function Gameplay()
         // coins logic.
         for(let i=0; i<coins.length; i++) 
         {
-            let DestroyCoin = false;            
+            let DestroyCoin = false;   
+
             // move left.
             coins[i].x -= coinsSpeed;
             // Destory out of bound
             if(coins[i].x + coins[i].width < 0) {
                 DestroyCoin = true;
             }
+
             // If player collide with the coins then increase the score.
             if(coins[i].Collider(balloon.x, balloon.y, balloon.width, balloon.height/2)) {
                 score += 5;
                 DestroyCoin = true;
+                boingSoundEffect.play();
             }
+
             // If Destroy coin is true then Destroy the coin.
             if(DestroyCoin) {
                 coins.splice(i, 1);
             }
         }
+
         // booms logic.
         for(let i=0; i<booms.length; i++) 
         {
             let DestroyBoom = false;
+
             // move letf.
             booms[i].x -= boomsSpeed;
             // Destory out of bound
             if(booms[i].x + booms[i].width < 0) {
                 DestoryBoom = true;
             }
+
             // If player collide with boom destory the player and stop the game.
             if(booms[i].Collider(balloon.x, balloon.y, balloon.width, balloon.height/2)) {
                 DestoryBoom = true;
                 hasGameStart = false;
                 gameOverMessage.Draw(ctx);
                 gameRestartMessage.Draw(ctx);
-                playBtn.style.display = 'inline';
                 backgroundSoundEffect.pause();
+                boomSoundEffect.play();
+                playBtn.style.display = 'inline';
                 clearInterval(gameInterval);
             }
+
             // If Destroy coin is true then Destroy the coin.
             if(DestroyBoom) {
                 booms.splice(i, 1);
             }
         }
-
-
-
+        
     }, FRAME_RATE);
 }
 
@@ -189,10 +195,13 @@ function SpawnRandomCoinsAndBooms(coins=[], booms=[], spawnDelay=0, SCR_WIDTH=0,
     {
         // Chance of spawn Coin.
         const chanceToSpawnObjectIsCoin = 40;
+
         // Calculate spawn probabilty.
         const calculateSpawnChance = Math.floor(Math.random() * 100); 
+
         // Random y spawning position.
         const y = Math.random() * (SCR_HEIGHT-120);
+        
         // If calculated range is under chanceToSpawnCoin range than spawn coin other wise spawn boom.
         if(calculateSpawnChance <= chanceToSpawnObjectIsCoin) {
             const coin = new Object(coinTexture, SCR_WIDTH, y, 80, 80);
