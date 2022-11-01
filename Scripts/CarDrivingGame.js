@@ -96,6 +96,7 @@ function Gameplay()
 {
     // Hide play button when user click it.
     playBtn.style.display = 'none';
+    ctx.canvas.style.backgroundColor = 'rgb(0, 255, 0)';
 
     // Set canvas resulation according to portrait or landscape mode.
     if(screen.width > screen.height) {
