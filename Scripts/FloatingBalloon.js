@@ -73,6 +73,8 @@ function Gameplay()
     const coin = new Object(coinTexture, 500, 500, 80, 80);
 
     const playerInput = new Input();
+    const jumpForce = 50.0;
+    const gravity = 10.0;
 
     playerInput.StartListener();
     
@@ -95,9 +97,16 @@ function Gameplay()
             townBackground.x = 0;
         }
 
+        // Control balloon flooting.
+        if(playerInput.Jump) {
+            balloon.y -= jumpForce;
+        }
         // Move balloon up and down make illusion of gravity.
-        balloon.y += 10;
-        if(balloon.y+balloon.height/2 > SCR_HEIGHT) {
+        balloon.y += gravity;
+        // Bound the balloon that it's not cross the screen.        
+        if(balloon.y < 1) {
+            balloon.y = 1;
+        } else if(balloon.y+balloon.height/2 > SCR_HEIGHT) {
             balloon.y = SCR_HEIGHT - balloon.height/2;
         }
 

@@ -43,6 +43,7 @@ class Input
         window.addEventListener('touchstart', (event)=>{
             this.touchPosition.x = startTouchPosition.x = event.touches[0].clientX;
             this.touchPosition.y = startTouchPosition.y = event.touches[0].clientY;
+            this.Jump = true;
         });
         window.addEventListener('touchmove', (event)=> {
             const deltaTouchPosition = {
@@ -72,6 +73,7 @@ class Input
         window.addEventListener('touchend', (event)=>{
             this.touchPosition.x = this.Vertical = 0;
             this.touchPosition.y = this.Horizontal = 0;
+            this.Jump = false;
         });
     }
 
