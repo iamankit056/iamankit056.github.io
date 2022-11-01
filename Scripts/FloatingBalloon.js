@@ -16,10 +16,10 @@ class Object
         ctx.closePath();
     }
 
-    Collider(collide)
+    Collider(x=0, y=0, width=0, height=0)
     {
-        if(this.x < collide.x+collide.width && this.x+this.width > collide.x &&
-            this.y < collide.y+collide.height && this.y+this.height > collide.y) {
+        if(this.x < x+width && this.x+this.width > x &&
+            this.y < y+height && this.y+this.height > y) {
                 return true;
         }
 
@@ -56,29 +56,28 @@ function Gameplay()
     const SCR_WIDTH  = ctx.canvas.width;
     const SCR_HEIGHT = ctx.canvas.height;
 
-    const lifeLineBoard = 
-        new UI(SCR_WIDTH * 0.05, 100, 'Life Line : ', 'white', '40px Arial', 'left');
     const scoreBoard = 
-        new UI(SCR_WIDTH * 0.05, 160, 'Score : ', 'white', '40px Arial', 'left');
+        new UI(SCR_WIDTH * 0.05, 120, 'Score : ', 'white', '50px Arial', 'left');
     const gameOverMessage = 
         new UI(ctx.canvas.width/2, ctx.canvas.height * 0.4, 'Game Over', 'red', 'bold 150px cursive', 'center');
     const gameRestartMessage = 
-        new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'white', '40px cursive', 'center');
+        new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'rgb(100, 100, 100)', 'bold 40px cursive', 'center');
 
     const townBackground = 
         new Object(townBackgroundTexture, 0, 0, SCR_WIDTH * (SCR_WIDTH > SCR_HEIGHT ? 2 : 4), SCR_HEIGHT);
     const balloon = 
         new Object(balloonTexture, SCR_WIDTH*0.25, SCR_HEIGHT*0.3, 80, 240);
+    const playerInput = new Input();
+
     const booms = [];
     const coins = [];
-
-    const playerInput = new Input();
     const jumpForce = 50.0;
     const gravity = 10.0;
     const spawnDelay = 200;
     const coinsSpeed = 25;
     const boomsSpeed = 20;
     const backgroundSpeed = 15;
+    let score = 0;
 
     // Start listening player inputs.
     playerInput.StartListener();
@@ -96,14 +95,16 @@ function Gameplay()
         // Render objects.
         townBackground.Draw(ctx);
         balloon.Draw(ctx);
-        // Spawn coins.
+        // Coins.
         for(let i=0; i<coins.length; i++) {
             coins[i].Draw(ctx);
         }
-        // Spawn booms.
+        // Booms.
         for(let i=0; i<booms.length; i++) {
             booms[i].Draw(ctx);
         }
+        // Scoreboard.
+        scoreBoard.Draw(ctx, score);
 
         // Game Logic
         townBackground.x -= backgroundSpeed;
@@ -129,7 +130,12 @@ function Gameplay()
             // move left.
             coins[i].x -= coinsSpeed;
             // Destory out of bound
-            if(coins[i].x + coins[i].width < 500) {
+            if(coins[i].x + coins[i].width < 0) {
+                coins.splice(i, 1);
+            }
+            // If player collide with the coins then increase the score.
+            if(coins[i].Collider(balloon.x, balloon.y, balloon.width, balloon.height/2)) {
+                score += 5;
                 coins.splice(i, 1);
             }
         }
@@ -138,8 +144,17 @@ function Gameplay()
             // move letf.
             booms[i].x -= boomsSpeed;
             // Destory out of bound
-            if(booms[i].x + booms[i].width < 500) {
+            if(booms[i].x + booms[i].width < 0) {
                 booms.splice(i, 1);
+            }
+            // If player collide with boom destory the player and stop the game.
+            if(booms[i].Collider(balloon.x, balloon.y, balloon.width, balloon.height/2)) {
+                booms.splice(i, 1);
+                hasGameStart = false;
+                gameOverMessage.Draw(ctx);
+                gameRestartMessage.Draw(ctx);
+                playBtn.style.display = 'inline';
+                clearInterval(gameInterval);
             }
         }
 
