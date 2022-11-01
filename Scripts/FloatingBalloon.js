@@ -35,7 +35,7 @@ const balloonTexture = document.querySelector("#Balloon");
 const boomTexture = document.querySelector("#Boom");
 const coinTexture = document.querySelector("#Coin");
 
-const hasGameStart = false;
+let hasGameStart = false;
 
 function Gameplay()
 {
@@ -75,9 +75,16 @@ function Gameplay()
     const playerInput = new Input();
     const jumpForce = 50.0;
     const gravity = 10.0;
+    const spawnDelay = 200;
+    const coinsSpeed = 25;
+    const boomsSpeed = 20;
+    const backgroundSpeed = 15;
 
+    // Start listening player inputs.
     playerInput.StartListener();
-
+    // True hasGameStart variable to start game.
+    hasGameStart = true;
+    // Start spawning coins and booms.
     SpawnRandomCoinsAndBooms(coins, booms, spawnDelay, SCR_WIDTH, SCR_HEIGHT);
 
     // Game Loop.
@@ -89,11 +96,17 @@ function Gameplay()
         // Render objects.
         townBackground.Draw(ctx);
         balloon.Draw(ctx);
-        coin.Draw(ctx);
-        boom.Draw(ctx);
+        // Spawn coins.
+        for(let i=0; i<coins.length; i++) {
+            coins[i].Draw(ctx);
+        }
+        // Spawn booms.
+        for(let i=0; i<booms.length; i++) {
+            booms[i].Draw(ctx);
+        }
 
         // Game Logic
-        townBackground.x -= 20;
+        townBackground.x -= backgroundSpeed;
         if(Math.abs(townBackground.x) > townBackground.width/2) {
             townBackground.x = 0;
         }
@@ -110,6 +123,26 @@ function Gameplay()
         } else if(balloon.y+balloon.height/2 > SCR_HEIGHT) {
             balloon.y = SCR_HEIGHT - balloon.height/2;
         }
+        
+        // coins logic.
+        for(let i=0; i<coins.length; i++) {
+            // move left.
+            coins[i].x -= coinsSpeed;
+            // Destory out of bound
+            if(coins[i].x + coins[i].width < 500) {
+                coins.splice(i, 1);
+            }
+        }
+        // booms logic.
+        for(let i=0; i<booms.length; i++) {
+            // move letf.
+            booms[i].x -= boomsSpeed;
+            // Destory out of bound
+            if(booms[i].x + booms[i].width < 500) {
+                booms.splice(i, 1);
+            }
+        }
+
 
 
     }, FRAME_RATE);
@@ -123,21 +156,23 @@ function SpawnRandomCoinsAndBooms(coins=[], booms=[], spawnDelay=0, SCR_WIDTH=0,
         const chanceToSpawnObjectIsCoin = 30;
         // Calculate spawn probabilty.
         const calculateSpawnChance = Math.floor(Math.random() * 100); 
+        // Random y spawning position.
+        const y = Math.random() * (SCR_HEIGHT-120);
         // If calculated range is under chanceToSpawnCoin range than spawn coin other wise spawn boom.
         if(calculateSpawnChance <= chanceToSpawnObjectIsCoin) {
-            const coin = new Object(coinTexture, 500, 500, 80, 80);
+            const coin = new Object(coinTexture, SCR_WIDTH, y, 80, 80);
             coins.push(coin);
         } else {
-            const boom = new Object(boomTexture, 500, 500, 100, 100);
+            const boom = new Object(boomTexture, SCR_WIDTH, y, 100, 100);
             booms.push(boom);
         }
 
-        const minSpawnRate = 700;
-        const maxSpawnRate = 1500;
+        const minSpawnRate = 1000;
+        const maxSpawnRate = 2000;
         const coinsOrBoomsSpawnRate = Math.random() * (maxSpawnRate - minSpawnRate) + minSpawnRate;
         
         if(hasGameStart) {
-            SpawnRandomCars(cars, coinsOrBoomsSpawnRate, SCR_WIDTH, SCR_HEIGHT);
+            SpawnRandomCoinsAndBooms(coins, booms, coinsOrBoomsSpawnRate, SCR_WIDTH, SCR_HEIGHT);
         }
 
     }, spawnDelay);
