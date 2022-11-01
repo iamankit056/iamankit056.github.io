@@ -35,7 +35,7 @@ const balloonTexture = document.querySelector("#Balloon");
 const boomTexture = document.querySelector("#Boom");
 const coinTexture = document.querySelector("#Coin");
 
-Gameplay();
+const hasGameStart = false;
 
 function Gameplay()
 {
@@ -69,15 +69,16 @@ function Gameplay()
         new Object(townBackgroundTexture, 0, 0, SCR_WIDTH * (SCR_WIDTH > SCR_HEIGHT ? 2 : 4), SCR_HEIGHT);
     const balloon = 
         new Object(balloonTexture, SCR_WIDTH*0.25, SCR_HEIGHT*0.3, 80, 240);
-    const boom = new Object(boomTexture, 500, 500, 100, 100);
-    const coin = new Object(coinTexture, 500, 500, 80, 80);
+    const booms = [];
+    const coins = [];
 
     const playerInput = new Input();
     const jumpForce = 50.0;
     const gravity = 10.0;
 
     playerInput.StartListener();
-    
+
+    SpawnRandomCoinsAndBooms(coins, booms, spawnDelay, SCR_WIDTH, SCR_HEIGHT);
 
     // Game Loop.
     const gameInterval = setInterval(function() 
@@ -112,4 +113,32 @@ function Gameplay()
 
 
     }, FRAME_RATE);
+}
+
+function SpawnRandomCoinsAndBooms(coins=[], booms=[], spawnDelay=0, SCR_WIDTH=0, SCR_HEIGHT=0)
+{
+    setTimeout(function()
+    {
+        // Chance of spawn Coin is 30% and Boom is 70%.
+        const chanceToSpawnObjectIsCoin = 30;
+        // Calculate spawn probabilty.
+        const calculateSpawnChance = Math.floor(Math.random() * 100); 
+        // If calculated range is under chanceToSpawnCoin range than spawn coin other wise spawn boom.
+        if(calculateSpawnChance <= chanceToSpawnObjectIsCoin) {
+            const coin = new Object(coinTexture, 500, 500, 80, 80);
+            coins.push(coin);
+        } else {
+            const boom = new Object(boomTexture, 500, 500, 100, 100);
+            booms.push(boom);
+        }
+
+        const minSpawnRate = 700;
+        const maxSpawnRate = 1500;
+        const coinsOrBoomsSpawnRate = Math.random() * (maxSpawnRate - minSpawnRate) + minSpawnRate;
+        
+        if(hasGameStart) {
+            SpawnRandomCars(cars, coinsOrBoomsSpawnRate, SCR_WIDTH, SCR_HEIGHT);
+        }
+
+    }, spawnDelay);
 }
