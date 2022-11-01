@@ -61,7 +61,7 @@ function Gameplay()
     const gameOverMessage = 
         new UI(ctx.canvas.width/2, ctx.canvas.height * 0.4, 'Game Over', 'red', 'bold 150px cursive', 'center');
     const gameRestartMessage = 
-        new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'rgb(100, 100, 100)', 'bold 40px cursive', 'center');
+        new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'rgb(80, 80, 80)', 'bold 50px cursive', 'center');
 
     const townBackground = 
         new Object(townBackgroundTexture, 0, 0, SCR_WIDTH * (SCR_WIDTH > SCR_HEIGHT ? 2 : 4), SCR_HEIGHT);
@@ -126,35 +126,47 @@ function Gameplay()
         }
         
         // coins logic.
-        for(let i=0; i<coins.length; i++) {
+        for(let i=0; i<coins.length; i++) 
+        {
+            let DestroyCoin = false;            
             // move left.
             coins[i].x -= coinsSpeed;
             // Destory out of bound
             if(coins[i].x + coins[i].width < 0) {
-                coins.splice(i, 1);
+                DestroyCoin = true;
             }
             // If player collide with the coins then increase the score.
             if(coins[i].Collider(balloon.x, balloon.y, balloon.width, balloon.height/2)) {
                 score += 5;
+                DestroyCoin = true;
+            }
+            // If Destroy coin is true then Destroy the coin.
+            if(DestroyCoin) {
                 coins.splice(i, 1);
             }
         }
         // booms logic.
-        for(let i=0; i<booms.length; i++) {
+        for(let i=0; i<booms.length; i++) 
+        {
+            let DestroyBoom = false;
             // move letf.
             booms[i].x -= boomsSpeed;
             // Destory out of bound
             if(booms[i].x + booms[i].width < 0) {
-                booms.splice(i, 1);
+                DestoryBoom = true;
             }
             // If player collide with boom destory the player and stop the game.
             if(booms[i].Collider(balloon.x, balloon.y, balloon.width, balloon.height/2)) {
-                booms.splice(i, 1);
+                DestoryBoom = true;
                 hasGameStart = false;
                 gameOverMessage.Draw(ctx);
                 gameRestartMessage.Draw(ctx);
                 playBtn.style.display = 'inline';
                 clearInterval(gameInterval);
+            }
+            // If Destroy coin is true then Destroy the coin.
+            if(DestroyBoom) {
+                booms.splice(i, 1);
             }
         }
 
@@ -167,8 +179,8 @@ function SpawnRandomCoinsAndBooms(coins=[], booms=[], spawnDelay=0, SCR_WIDTH=0,
 {
     setTimeout(function()
     {
-        // Chance of spawn Coin is 30% and Boom is 70%.
-        const chanceToSpawnObjectIsCoin = 30;
+        // Chance of spawn Coin.
+        const chanceToSpawnObjectIsCoin = 40;
         // Calculate spawn probabilty.
         const calculateSpawnChance = Math.floor(Math.random() * 100); 
         // Random y spawning position.
