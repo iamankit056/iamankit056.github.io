@@ -111,6 +111,7 @@ function Gameplay()
     const FRAME_RATE = 41.6667; 
     const SCR_WIDTH  = ctx.canvas.width;
     const SCR_HEIGHT = ctx.canvas.height;
+
     const speedBoard = 
         new UI(SCR_WIDTH * 0.05, 100, 'Speed : ', 'white', '40px Arial', 'left');
     const distanceBoard = 
@@ -119,12 +120,14 @@ function Gameplay()
         new UI(ctx.canvas.width/2, ctx.canvas.height * 0.4, 'Game Over', 'red', 'bold 150px cursive', 'center');
     const gameRestartMessage = 
         new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'white', '40px cursive', 'center');
+
     const cars = [];
     const road = new Road(roadImage, SCR_WIDTH, SCR_HEIGHT);
     const player = new Car(20, SCR_WIDTH, SCR_HEIGHT, 0, 180);
     const playerFinalPositionOnY = SCR_HEIGHT * 0.6;
     const playerInput = new Input();
     const spawnRate = Math.random(200, 600);
+    
     const Animation = {
         'isComplete': false,
         'countDown': 3,
