@@ -21,35 +21,60 @@ class TilesManager
 {
     constructor(SCR_WIDTH=0, SCR_HEIGHT=0)
     {
-        this.Tiles = [];
+        this.tiles = [];
         this.margin = 20;
         this.tilesHeight = 30;
         this.tilesColor = 'rgb(255, 0, 0)';
         
-        // Adjust number of tiles
-        if(SCR_WIDTH > SCR_HEIGHT)
+        // Adjust tiles
+        if(SCR_WIDTH > SCR_HEIGHT) 
         {
-            this.numberOfTiles = 10;
-            this.tilesWidth = SCR_WIDTH/(this.numberOfTiles + this.margin);
-            for(let i=0; i < this.numberOfTiles; i++) 
-            {
-                const x = this.margin + this.tilesWidth * i;
-                const y = this.margin + this.tilesHeight * i;
-                const tile = new Tile(x, y, this.tilesWidth, this.tilesHeight);
-            }
+            this.numberOfTilesIn = {
+                'Rows': 10,
+                'Columns': 10
+            };
+
+            // calculate final screen with after substracting margin.
+            const finalWidth = SCR_WIDTH - this.margin*(this.numberOfTilesIn.Rows+1);
+            // calculate tiles width. that fits in screen width.
+            this.tilesWidth = finalWidth/this.numberOfTilesIn.Rows;       
         }
         else 
         {
-            this.numberOfTiles = 5;
-            this.tilesWidth = SCR_WIDTH/(this.numberOfTiles + this.margin);
+            this.numberOfTilesIn = {
+                'Rows': 5,
+                'Columns': 10
+            };
+
+            // calculate final screen with after substracting margin.
+            const finalWidth = SCR_WIDTH - this.margin*(this.numberOfTilesIn.Rows+1);
+            // calculate tiles width. that fits in screen width.
+            this.tilesWidth = finalWidth/this.numberOfTilesIn.Rows; 
         }
+
+        // Generate tiles.
+        this.GenerateTiles();
     }
 
     Draw(ctx)
     {
-        this.Tiles.forEach((tile)=>{
+        this.tiles.forEach((tile)=>{
             tile.Draw(ctx, this.tilesColor);
         })
+    }
+
+    GenerateTiles()
+    {
+        for(let i=0; i<this.numberOfTilesIn.Columns; i++)
+        {
+            for(let j=0; j<this.numberOfTilesIn.Rows; j++)
+            {
+                const x = this.margin + (this.margin + this.tilesWidth) * j;
+                const y = this.margin + (this.margin + this.tilesHeight) * i;
+                const tile = new Tile(x, y, this.tilesWidth, this.tilesHeight);
+                this.tiles.push(tile);
+            }
+        } 
     }
 }
 
@@ -119,6 +144,7 @@ function Gameplay()
     
     const ball = new Ball(SCR_WIDTH/2, SCR_HEIGHT - 50, 20, 'rgb(255, 0, 0)');
     const playerPaddel = new Tile(SCR_WIDTH/2 - 80, SCR_HEIGHT-30, 160, 30);
+    const tilesManager = new TilesManager(SCR_WIDTH, SCR_HEIGHT);
 
     let score = 0;
     let lifeLine = 3;
@@ -140,6 +166,7 @@ function Gameplay()
         // Render objects.
         ball.Draw(ctx);
         playerPaddel.Draw(ctx, 'rgb(0, 0, 255');
+        tilesManager.Draw(ctx);
         lifeLineBoard.Draw(ctx, lifeLine);
         scoreBoard.Draw(ctx, score);
 
