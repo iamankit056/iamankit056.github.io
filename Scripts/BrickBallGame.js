@@ -16,6 +16,43 @@ class Tile
         ctx.closePath();
     }
 }
+
+class TilesManager
+{
+    constructor(SCR_WIDTH=0, SCR_HEIGHT=0)
+    {
+        this.Tiles = [];
+        this.margin = 20;
+        this.tilesHeight = 30;
+        this.tilesColor = 'rgb(255, 0, 0)';
+        
+        // Adjust number of tiles
+        if(SCR_WIDTH > SCR_HEIGHT)
+        {
+            this.numberOfTiles = 10;
+            this.tilesWidth = SCR_WIDTH/(this.numberOfTiles + this.margin);
+            for(let i=0; i < this.numberOfTiles; i++) 
+            {
+                const x = this.margin + this.tilesWidth * i;
+                const y = this.margin + this.tilesHeight * i;
+                const tile = new Tile(x, y, this.tilesWidth, this.tilesHeight);
+            }
+        }
+        else 
+        {
+            this.numberOfTiles = 5;
+            this.tilesWidth = SCR_WIDTH/(this.numberOfTiles + this.margin);
+        }
+    }
+
+    Draw(ctx)
+    {
+        this.Tiles.forEach((tile)=>{
+            tile.Draw(ctx, this.tilesColor);
+        })
+    }
+}
+
 class Ball {
     constructor(x=0, y=0, radius=0, color='red')
     {
@@ -85,6 +122,7 @@ function Gameplay()
 
     let score = 0;
     let lifeLine = 3;
+    const ballSpeed = 20;
     const playerSpeed = 20;
 
     const playerInput = new Input();
@@ -115,7 +153,16 @@ function Gameplay()
             playerPaddel.x = SCR_WIDTH-playerPaddel.width;
         }
 
-        // 
+        // ball movement
+        ball.x += ball.dx * ballSpeed;
+        ball.y += ball.dy * ballSpeed;
+        // change ball movement direction
+        if(ball.x-ball.radius < 1 || ball.x+ball.radius > SCR_WIDTH) {
+            ball.dx = -ball.dx;
+        }
+        if(ball.y-ball.radius < 1 || ball.y+ball.radius > SCR_HEIGHT) {
+            ball.dy = -ball.dy;
+        }
 
 
     }, FRAME_RATE);
