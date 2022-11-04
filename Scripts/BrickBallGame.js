@@ -24,7 +24,7 @@ class TilesManager
         this.tiles = [];
         this.margin = 20;
         this.tilesHeight = 30;
-        this.tilesColor = 'rgb(255, 0, 0)';
+        this.tilesColor = 'rgb(0, 255, 0)';
         
         // Adjust tiles
         if(SCR_WIDTH > SCR_HEIGHT) 
@@ -149,7 +149,7 @@ function Gameplay()
     let score = 0;
     let lifeLine = 3;
     const ballSpeed = 20;
-    const playerSpeed = 20;
+    const playerSpeed = 30;
 
     const playerInput = new Input();
 
@@ -173,10 +173,11 @@ function Gameplay()
         // Game Logic
         playerPaddel.x += playerInput.Horizontal * playerSpeed;
         // bound blayer movement.
+        let playerPaddelAddWidthOnX = playerPaddel.x + playerPaddel.width;
         if(playerPaddel.x < 1) {
             playerPaddel.x = 1;
         }
-        if(playerPaddel.x+playerPaddel.width > SCR_WIDTH) {
+        if(playerPaddelAddWidthOnX > SCR_WIDTH) {
             playerPaddel.x = SCR_WIDTH-playerPaddel.width;
         }
 
@@ -184,13 +185,53 @@ function Gameplay()
         ball.x += ball.dx * ballSpeed;
         ball.y += ball.dy * ballSpeed;
         // change ball movement direction
-        if(ball.x-ball.radius < 1 || ball.x+ball.radius > SCR_WIDTH) {
+        let ballSubRadiusOnX = ball.x - ball.radius;
+        let ballAddRadiusOnX = ball.x + ball.radius;
+        let ballSubRadiusOnY = ball.y - ball.radius;
+        let ballAddRadiusOnY = ball.y + ball.radius;
+
+        if(ballSubRadiusOnX < 1 || ballAddRadiusOnX > SCR_WIDTH) {
             ball.dx = -ball.dx;
         }
-        if(ball.y-ball.radius < 1 || ball.y+ball.radius > SCR_HEIGHT) {
+        if(ballSubRadiusOnY < 1 || (ballAddRadiusOnY >= playerPaddel.y && ballAddRadiusOnX <= playerPaddelAddWidthOnX && ballSubRadiusOnX > playerPaddel.x)) {
             ball.dy = -ball.dy;
         }
+        
+        // If ball touches the ground then reduce player lifeline and reset game.
+        if(ballAddRadiusOnY > SCR_HEIGHT) {
+            lifeLine -= 1;
+            ball.dx = 1;
+            ball.dy = -1;
+            ball.x = SCR_WIDTH / 2;
+            ball.y = SCR_HEIGHT - (playerPaddel.height + ball.radius);
+            playerPaddel.x = (SCR_WIDTH - playerPaddel.width) / 2;
+            playerPaddel.y = SCR_HEIGHT - playerPaddel.height;
+        }
+        
+        // If player lifeline is zere then display game over message.
+        if(lifeLine > 1) {
+            //gameOverMessage.Draw(ctx);
+            gameRestartMessage.Draw(ctx);
+            playBtn.style.display = 'inline';
+            clearInterval(gameInterval);
+        }
 
+        // Tiles logic
+        for(let tilesIndex=0; tilesIndex<tilesManager.tiles.length; tilesIndex++)
+        {
+            if(ball.DetectCollision(tilesManager.tiles[tilesIndex]))
+            {
+                score += 5;
+                ball.dy = -ball.dy;
+                tilesManager.tiles.splice(tilesIndex, 1);
+            }
+        }
+
+        // Generate tiles if all tiles are destoryed and increase tiles for increase deficulty.
+        if(tilesManager.tiles.length < 1) {
+            tilesManager.numberOfTilesIn.Columns += 2;
+            tilesManager.GenerateTiles();
+        }
 
     }, FRAME_RATE);
 }
