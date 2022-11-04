@@ -15,7 +15,25 @@ class Tile
         ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.closePath();
     }
+}
+class Ball {
+    constructor(x=0, y=0, radius=0, color='red')
+    {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.color = color;
+    }
 
+    Draw(ctx=new CanvasRenderingContext2D())
+    {
+        ctx.beginPath();
+        ctx.fillStyle = this.color;
+        ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
+        ctx.fill();
+        ctx.closePath();
+    }
+    
     DetectCollision(tile)
     {
         if(this.x < tile.x+tile.width && this.x+this.width > tile.x &&
@@ -24,13 +42,6 @@ class Tile
         }
         
         return false;
-    }
-}
-class Tiles 
-{
-    constructor(SCR_WIDTH=0, SCR_HEIGHT=0, TILE_SIZE=0)
-    {
-        this.tiles = [];
     }
 }
 
@@ -71,6 +82,12 @@ function Gameplay()
 
     let score = 0;
     let lifeLine = 3;
+    const playerSpeed = 20;
+
+    const playerInput = new Input();
+
+    // start listening player input.
+    playerInput.StartListener();
 
 
     // Game Loop.
@@ -85,6 +102,16 @@ function Gameplay()
         scoreBoard.Draw(ctx, score);
 
         // Game Logic
+        playerPaddel.x += playerInput.Horizontal * playerSpeed;
+        // bound blayer movement.
+        if(playerPaddel.x < 1) {
+            playerPaddel.x = 1;
+        }
+        if(playerPaddel.x+playerPaddel.width > SCR_WIDTH) {
+            playerPaddel.x = SCR_WIDTH-playerPaddel.width;
+        }
+
+        // 
 
 
     }, FRAME_RATE);
