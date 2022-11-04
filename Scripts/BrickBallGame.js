@@ -111,6 +111,7 @@ class Ball {
 
 const ctx = document.querySelector('canvas').getContext('2d');
 const playBtn = document.querySelector('button');
+const boingSoundEffect = document.querySelector('#BoingSoundEffect');
 
 function Gameplay()
 {
@@ -154,7 +155,6 @@ function Gameplay()
     // start listening player input.
     playerInput.StartListener();
 
-
     // Game Loop.
     const gameInterval = setInterval(function() 
     {
@@ -190,9 +190,13 @@ function Gameplay()
 
         if(ballSubRadiusOnX < 1 || ballAddRadiusOnX > SCR_WIDTH) {
             ball.dx = -ball.dx;
+            boingSoundEffect.pause();
+            boingSoundEffect.play();
         }
         if(ballSubRadiusOnY < 1 || (ballAddRadiusOnY >= playerPaddel.y && ballAddRadiusOnX <= playerPaddelAddWidthOnX && ballSubRadiusOnX > playerPaddel.x)) {
             ball.dy = -ball.dy;
+            boingSoundEffect.pause();
+            boingSoundEffect.play();
         }
         
         // If ball touches the ground then reduce player lifeline and reset game.
@@ -207,8 +211,8 @@ function Gameplay()
         }
         
         // If player lifeline is zere then display game over message.
-        if(lifeLine > 1) {
-            //gameOverMessage.Draw(ctx);
+        if(lifeLine < 1) {
+            gameOverMessage.Draw(ctx);
             gameRestartMessage.Draw(ctx);
             playBtn.style.display = 'inline';
             clearInterval(gameInterval);
@@ -221,6 +225,8 @@ function Gameplay()
             {
                 score += 5;
                 ball.dy = -ball.dy;
+                boingSoundEffect.pause();
+                boingSoundEffect.play();
                 tilesManager.tiles.splice(tilesIndex, 1);
             }
         }
