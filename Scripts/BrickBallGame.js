@@ -112,8 +112,6 @@ class Ball {
 const ctx = document.querySelector('canvas').getContext('2d');
 const playBtn = document.querySelector('button');
 
-Gameplay();
-
 function Gameplay()
 {
     // Hide play button when user click it.
