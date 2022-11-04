@@ -21,6 +21,8 @@ class Ball {
     {
         this.x = x;
         this.y = y;
+        this.dx = 1;
+        this.dy = -1;
         this.radius = radius;
         this.color = color;
     }
@@ -33,11 +35,11 @@ class Ball {
         ctx.fill();
         ctx.closePath();
     }
-    
+
     DetectCollision(tile)
     {
-        if(this.x < tile.x+tile.width && this.x+this.width > tile.x &&
-            this.y < tile.y+tile.height && this.y+this.height > tile.y) {
+        if(this.x-this.radius < tile.x+tile.width && this.x+this.radius > tile.x &&
+            this.y-this.radius < tile.y+tile.height && this.y+this.radius > tile.y) {
                 return true;
         }
         
@@ -76,8 +78,9 @@ function Gameplay()
     const gameOverMessage = 
         new UI(ctx.canvas.width/2, ctx.canvas.height * 0.4, 'Game Over', 'red', 'bold 150px cursive', 'center');
     const gameRestartMessage = 
-        new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'white', '40px cursive', 'center');
+        new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'white', 'bold 50px cursive', 'center');
     
+    const ball = new Ball(SCR_WIDTH/2, SCR_HEIGHT - 50, 20, 'rgb(255, 0, 0)');
     const playerPaddel = new Tile(SCR_WIDTH/2 - 80, SCR_HEIGHT-30, 160, 30);
 
     let score = 0;
@@ -97,6 +100,7 @@ function Gameplay()
         ctx.clearRect(0, 0, SCR_WIDTH, SCR_HEIGHT);
         
         // Render objects.
+        ball.Draw(ctx);
         playerPaddel.Draw(ctx, 'rgb(0, 0, 255');
         lifeLineBoard.Draw(ctx, lifeLine);
         scoreBoard.Draw(ctx, score);

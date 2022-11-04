@@ -122,14 +122,16 @@ function Gameplay()
     const FRAME_RATE = 41.6667; 
     const SCR_WIDTH  = ctx.canvas.width;
     const SCR_HEIGHT = ctx.canvas.height;
+
     const lifeBoard = 
-        new UI(SCR_WIDTH * 0.05, 100, 'Life : ', 'white', '40px Arial', 'left');
+        new UI(SCR_WIDTH * 0.05, 100, 'Life : ', 'white', '50px Arial', 'left');
     const scoreBoard = 
-        new UI(SCR_WIDTH * 0.05, 160, 'Score : ', 'white', '40px Arial', 'left');
+        new UI(SCR_WIDTH * 0.05, 160, 'Score : ', 'white', '50px Arial', 'left');
     const gameOverMessage = 
         new UI(ctx.canvas.width/2, ctx.canvas.height * 0.4, 'Game Over', 'red', 'bold 150px cursive', 'center');
     const gameRestartMessage = 
-        new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'white', '40px cursive', 'center');
+        new UI(ctx.canvas.width/2, ctx.canvas.height * 0.7, 'Press Play to Restart Game', 'white', 'bold 50px cursive', 'center');
+        
     const TILE_SIZE = 20;
     const tiles = {
         'size': TILE_SIZE,
