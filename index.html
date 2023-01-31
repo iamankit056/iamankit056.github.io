@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Games Project | Ankit kumar</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+    <header id="About">
+        <div id="menuBar">
+            <div id="myLogo">
+                <h1>Ankit kumar</h1>
+                <p>Junior Programmer</p>
+            </div>
+            <nav id="myLinks">
+                <a href="https://github.com/iamankit056" target="_blank" class="myLink">
+                    <i class="fa-brands fa-github icon"></i>
+                    Github
+                </a>
+                <a href="https://linkedin.com/in/iamankit056" target="_blank" class="myLink">
+                    <i class="fa-brands fa-linkedin icon"></i>
+                    LinkedIn
+                </a>
+                <a href="https://play.unity.com/u/iamankit056" target="_blank" class="myLink">
+                    <i class="fa-brands fa-unity icon"></i>
+                    Unity
+                </a>
+            </nav>
+            <div id="myBtn">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </header>
+    <section id="Projects">
+        <h1>My Games</h1>
+        <div id="myGames">
+            <a href="My Games/Box Jump/index.html" class="myGame">Box Jump</a>
+            <a href="My Games/Flying Circle/index.html" class="myGame">Flying Circle</a>
+            <a href="My Games/Snake Game/index.html" class="myGame">Snake Game</a>
+            <a href="My Games/Pong Game/index.html" class="myGame">Pong Game</a>
+            <a href="My Games/Bricks Ball/index.html" class="myGame">Brick Ball</a>
+        </div>
+    </section>
+
+    <script>
+        const myLinks = document.querySelector('#myLinks');
+        let myLinksVisible = false;
+
+        document.querySelector('#myBtn').
+            addEventListener('click', (e)=>{
+            if(!myLinksVisible) {
+                myLinks.style.left = '0';
+            }
+            else {
+                myLinks.style.left = '-100%';
+            }
+
+            myLinksVisible = !myLinksVisible;
+        });
+    </script>
+</body>
+</html>

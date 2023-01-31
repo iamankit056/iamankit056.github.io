@@ -1,0 +1,104 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    overflow-x: hidden;
+    background-color: rgb(43, 43, 43);
+    font-family: poppins, arial, sans-serif;
+}
+
+#menuBar {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    color: #fff;
+    background-color: #000;
+}
+
+.myLink {
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.myLink:hover {
+    background-color: #00f;
+}
+
+#myBtn {
+    display: none;
+}
+
+#Projects {
+    margin: 50px 8%;
+    padding: 50px;
+    background-color: rgb(78, 78, 78);
+}
+
+#Projects h1 {
+    color: #ff0;
+}
+
+#myGames {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.myGame {
+    padding: 15px 20px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 2px solid #fff;
+}
+
+.myGame:hover {
+    border: 2px solid #0f0;
+    background-color: #00f;
+}
+
+/* Use media query to make page for mobile devices */
+@media only screen and (max-width: 500px) 
+{
+    #myBtn {
+        display: block;
+    }  
+
+    #myLinks {
+        padding-bottom: 25px;
+        position: absolute;
+        top: 150px;
+        left: -100%;
+        width: 100%;
+        background-color: #000;
+    }
+
+    .myLink {
+        padding-left: 25px;
+        display: block;
+        border-radius: 0px;
+    }
+
+    #Projects {
+        margin: 25px;
+        padding: 25px;
+    }
+    
+    #myGames {
+        grid-template-columns: 1fr;
+    }
+}
